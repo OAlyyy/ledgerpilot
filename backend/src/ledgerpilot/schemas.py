@@ -80,10 +80,13 @@ class Invoice(BaseModel):
 
     model_config = ConfigDict(use_enum_values=False)
 
-    vendor_name: str | None = None
-    vendor_address: str | None = None
-    vendor_vat_id: str | None = Field(None, description="USt-IdNr., e.g. DE123456789")
-    invoice_number: str | None = None
+    # Length limits are a cheap semantic check: constrained decoding guarantees
+    # well-formed JSON, not sensible values, and a model that starts "thinking"
+    # inside a string field produces a schema-valid but useless answer.
+    vendor_name: str | None = Field(None, max_length=120)
+    vendor_address: str | None = Field(None, max_length=200)
+    vendor_vat_id: str | None = Field(None, max_length=32, description="USt-IdNr., e.g. DE123456789")
+    invoice_number: str | None = Field(None, max_length=40)
     invoice_date: date | None = None
     due_date: date | None = None
     currency: Currency = Currency.EUR
@@ -92,5 +95,5 @@ class Invoice(BaseModel):
     gross_amount: Decimal | None = None
     vat_breakdown: list[VatLine] = Field(default_factory=list)
     line_items: list[LineItem] = Field(default_factory=list)
-    iban: str | None = None
-    language: str | None = Field(None, description="'de' or 'en'")
+    iban: str | None = Field(None, max_length=42)
+    language: str | None = Field(None, max_length=2, description="'de' or 'en'")
