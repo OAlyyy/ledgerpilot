@@ -45,6 +45,7 @@ LABELS = {
         "vat_line": "zzgl. {rate} USt. auf {net}",
         "gross": "Gesamtbetrag",
         "pay": "Bitte überweisen Sie den Betrag bis zum {due} ohne Abzug auf folgendes Konto:",
+        "pay_no_date": "Bitte überweisen Sie den Betrag ohne Abzug auf folgendes Konto:",
         "pay_now": "Der Betrag wurde per Kreditkarte beglichen.",
         "vat_id": "USt-IdNr.",
         "thanks": "Vielen Dank für Ihren Einkauf!",
@@ -69,6 +70,7 @@ LABELS = {
         "vat_line": "VAT {rate} on {net}",
         "gross": "Total",
         "pay": "Please transfer the amount by {due} to:",
+        "pay_no_date": "Please transfer the amount to:",
         "pay_now": "Paid by credit card. No action required.",
         "vat_id": "VAT ID",
         "thanks": "Thank you!",
@@ -198,9 +200,11 @@ def _payment_block(spec: Spec) -> list[object]:
     inv, lang = spec.invoice, spec.vendor.language
     L = LABELS[lang]
     out: list[object] = []
-    if inv.due_date and inv.iban:
-        due = fmt_date(inv.due_date, lang, spec.layout)
-        out.append(Paragraph(L["pay"].format(due=due), BASE))
+    if inv.iban:
+        if inv.due_date:
+            out.append(Paragraph(L["pay"].format(due=fmt_date(inv.due_date, lang, spec.layout)), BASE))
+        else:
+            out.append(Paragraph(L["pay_no_date"], BASE))
         out.append(Paragraph(f"IBAN: {_group_iban(inv.iban)}", BOLD))
     elif inv.due_date:
         out.append(Paragraph(f"{L['due']}: {fmt_date(inv.due_date, lang, spec.layout)}", BASE))

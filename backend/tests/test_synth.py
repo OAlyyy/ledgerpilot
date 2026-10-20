@@ -5,6 +5,7 @@ from the printed invoice, and the dataset must be reproducible from its seed."""
 from __future__ import annotations
 
 import json
+import re
 from decimal import Decimal
 from pathlib import Path
 
@@ -125,8 +126,13 @@ def test_text_layer_matches_truth_and_scans_have_none(dataset):
             assert text.strip() == "", f"{t.id} is a scan but has a text layer"
         else:
             assert t.invoice.vendor_name and t.invoice.vendor_name in text, t.id
-            if t.invoice.invoice_number:
-                assert t.invoice.invoice_number in text, t.id
+            # every identifier in the ground truth must be printed (found a real bug:
+            # IBANs were in the truth but not on invoices without a due date)
+            flat = re.sub(r"\s", "", text)
+            for f in ("invoice_number", "vendor_vat_id", "iban"):
+                value = getattr(t.invoice, f)
+                if value:
+                    assert re.sub(r"\s", "", value) in flat, f"{t.id}: {f} not printed"
 
 
 def test_hidden_injection_is_in_text_layer(dataset):
