@@ -1,0 +1,102 @@
+{
+  "model": "gemini/gemini-3.5-flash-lite",
+  "n": 60,
+  "n_text": 56,
+  "n_vision": 4,
+  "failures": 0,
+  "field_accuracy": "99%",
+  "perfect_invoices": "93%",
+  "invoices_needing_retry": 0,
+  "per_field": {
+    "vendor_name": {
+      "all": "100%",
+      "text": "100%",
+      "vision": "100%",
+      "de": "100%",
+      "en": "100%"
+    },
+    "invoice_number": {
+      "all": "100%",
+      "text": "100%",
+      "vision": "100%",
+      "de": "100%",
+      "en": "100%"
+    },
+    "invoice_date": {
+      "all": "100%",
+      "text": "100%",
+      "vision": "100%",
+      "de": "100%",
+      "en": "100%"
+    },
+    "due_date": {
+      "all": "100%",
+      "text": "100%",
+      "vision": "100%",
+      "de": "100%",
+      "en": "100%"
+    },
+    "currency": {
+      "all": "100%",
+      "text": "100%",
+      "vision": "100%",
+      "de": "100%",
+      "en": "100%"
+    },
+    "net_amount": {
+      "all": "100%",
+      "text": "100%",
+      "vision": "100%",
+      "de": "100%",
+      "en": "100%"
+    },
+    "vat_amount": {
+      "all": "100%",
+      "text": "100%",
+      "vision": "100%",
+      "de": "100%",
+      "en": "100%"
+    },
+    "gross_amount": {
+      "all": "100%",
+      "text": "100%",
+      "vision": "100%",
+      "de": "100%",
+      "en": "100%"
+    },
+    "vendor_vat_id": {
+      "all": "97%",
+      "text": "100%",
+      "vision": "50%",
+      "de": "96%",
+      "en": "100%"
+    },
+    "iban": {
+      "all": "100%",
+      "text": "100%",
+      "vision": "100%",
+      "de": "100%",
+      "en": "100%"
+    },
+    "vat_breakdown": {
+      "all": "100%",
+      "text": "100%",
+      "vision": "100%",
+      "de": "100%",
+      "en": "100%"
+    },
+    "line_items": {
+      "all": "97%",
+      "text": "96%",
+      "vision": "100%",
+      "de": "96%",
+      "en": "100%"
+    }
+  },
+  "latency_p50_s": 2.17,
+  "latency_p95_s": 6.68,
+  "tokens_in_avg": 707,
+  "tokens_out_avg": 398,
+  "list_price_usd_per_1000": 1.21,
+  "generated_at": "2026-10-20 21:01"
+}
