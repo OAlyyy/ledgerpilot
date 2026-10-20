@@ -34,7 +34,7 @@ from typing import Any
 
 from ledgerpilot.config import REPO_ROOT, get_settings
 from ledgerpilot.extraction import extract_invoice
-from ledgerpilot.llm import LLMClient, StructuredOutputError, Usage
+from ledgerpilot.llm import LLMClient, QuotaExhaustedError, StructuredOutputError, Usage
 from ledgerpilot.schemas import Invoice
 from ledgerpilot.synth.scenarios import GroundTruth
 
@@ -154,6 +154,11 @@ def run(
             pred, method, attempts, usage = ex.invoice, ex.method, ex.attempts, ex.usage
         except StructuredOutputError as e:
             attempts, error, usage = len(e.errors), "invalid_output", e.usage
+        except QuotaExhaustedError:
+            # Not the model's fault: abort instead of scoring the rest as failures.
+            # Re-running later is free for invoices already done (response cache).
+            print(f"  quota exhausted at {t.id} after {len(rows)} invoices; no report written")
+            raise
         except Exception as e:  # provider error after retries: count as a failed invoice
             error = f"{type(e).__name__}: {str(e)[:120]}"
         row = Row(
@@ -307,7 +312,12 @@ def main() -> None:
     args = ap.parse_args()
     model = args.model or get_settings().llm_model
     print(f"extraction eval: {model}")
-    rows = run(model, args.data, args.limit, ids=args.ids)
+    try:
+        rows = run(model, args.data, args.limit, ids=args.ids)
+    except QuotaExhaustedError as e:
+        raise SystemExit(
+            f"stopped: {e.model} free-tier quota exhausted; re-run later (finished invoices are cached)"
+        ) from None
     out = write_reports(model, rows, args.out)
     print()
     print((out / "summary.md").read_text())

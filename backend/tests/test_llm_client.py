@@ -69,3 +69,13 @@ def test_images_become_content_parts():
     parts = t.calls[0]["messages"][1]["content"]
     assert parts[0] == {"type": "text", "text": "look"}
     assert parts[1]["image_url"]["url"].startswith("data:image/png;base64,")
+
+
+def test_daily_quota_is_not_retried():
+    from ledgerpilot.llm.transport import retry_after_seconds
+
+    gemini = 'Quota exceeded ... Please retry in 9h23m15.15s.", "retryDelay": "33795s"'
+    assert retry_after_seconds(gemini) == 33795
+    assert retry_after_seconds("Please retry in 9h23m15.15s.") == 9 * 3600 + 23 * 60 + 15.15
+    assert retry_after_seconds("please retry in 12.5s") == 12.5
+    assert retry_after_seconds("internal error") is None

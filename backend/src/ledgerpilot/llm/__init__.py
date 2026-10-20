@@ -6,11 +6,17 @@ from ledgerpilot.llm.client import (
     StructuredResult,
     Usage,
 )
-from ledgerpilot.llm.transport import LiteLLMTransport, Transport, TransportResponse
+from ledgerpilot.llm.transport import (
+    LiteLLMTransport,
+    QuotaExhaustedError,
+    Transport,
+    TransportResponse,
+)
 
 __all__ = [
     "LLMClient",
     "LiteLLMTransport",
+    "QuotaExhaustedError",
     "StructuredOutputError",
     "StructuredResult",
     "Transport",
