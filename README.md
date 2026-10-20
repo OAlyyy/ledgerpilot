@@ -10,7 +10,11 @@ the architecture and the roadmap.
 ## Quick start (so far)
 
 ```bash
-cd backend && uv sync
-make synth        # generate ~60 synthetic invoice PDFs + ground truth into data/synth/
-make test
+cp .env.example .env   # add a free Gemini API key (Google AI Studio)
+cd backend && uv sync && cd ..
+make synth             # 60 synthetic invoice PDFs + ground truth into data/synth/
+make test              # offline: uses a scripted fake LLM
+make eval-extract      # per-field extraction accuracy; MODEL=gemini/... LIMIT=20 to override
 ```
+
+Latest extraction results: [`eval/reports/extraction/comparison.md`](eval/reports/extraction/comparison.md).
